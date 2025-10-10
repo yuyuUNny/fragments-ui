@@ -1,0 +1,23 @@
+
+{
+  "name": "fragments-ui",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Fragments UI testing web app",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "url": "git+https://github.com/yuyuUNny/CPP555-Lab/fragments-ui.git"
+  },
+  "author": "Uny Li",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "oidc-client-ts": "^2.2.2"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}
