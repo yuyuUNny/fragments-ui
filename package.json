@@ -1,4 +1,3 @@
-
 {
   "name": "fragments-ui",
   "private": true,
@@ -7,7 +6,8 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier"
   },
   "repository": {
     "url": "git+https://github.com/yuyuUNny/CPP555-Lab/fragments-ui.git"
@@ -15,7 +15,10 @@
   "author": "Uny Li",
   "license": "UNLICENSED",
   "dependencies": {
-    "oidc-client-ts": "^2.2.2"
+    "oidc-client-ts": "^2.2.2",
+    "prettier": "^3.6.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "parcel": "^2.8.3"
