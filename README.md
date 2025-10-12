@@ -9,3 +9,7 @@ npm start
 ## linting
 
 npm run lint
+
+## eslint version
+
+v8.57.1
