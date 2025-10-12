@@ -7,20 +7,20 @@ const cognitoAuthConfig = {
   response_type: 'code',
   scope: 'phone openid email',
   revokeTokenTypes: ['refresh_token'],
-  automaticSilentRenew: false,
+  automaticSilentRenew: false
 };
 
 const userManager = new UserManager({
-  ...cognitoAuthConfig,
+  ...cognitoAuthConfig
 });
 
 export { userManager };
 
-export async function signIn() {
+export async function signIn () {
   await userManager.signinRedirect();
 }
 
-export async function signOut() {
+export async function signOut () {
   try {
     // Clear the user from the UserManager first
     await userManager.removeUser();
@@ -39,7 +39,7 @@ export async function signOut() {
   window.location.href = logoutUrl;
 }
 
-function formatUser(user) {
+function formatUser (user) {
   console.log('User Authenticated', { user });
   return {
     username: user.profile.preferred_username || user.profile.email,
@@ -48,12 +48,12 @@ function formatUser(user) {
     accessToken: user.access_token,
     authorizationHeaders: (type = 'application/json') => ({
       'Content-Type': type,
-      Authorization: `Bearer ${user.id_token}`,
-    }),
+      Authorization: `Bearer ${user.id_token}`
+    })
   };
 }
 
-export async function getUser() {
+export async function getUser () {
   if (window.location.search.includes('code=')) {
     const user = await userManager.signinCallback();
     window.history.replaceState({}, document.title, window.location.pathname);

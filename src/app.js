@@ -1,7 +1,7 @@
 import { signIn, getUser, signOut } from './auth.js';
 import { getUserFragments } from './api.js';
 
-async function init() {
+async function init () {
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
   const user = await getUser();

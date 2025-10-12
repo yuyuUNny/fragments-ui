@@ -1,12 +1,12 @@
 // fragments microservice API to use, defaults to localhost:8080 if not set in env
 const apiUrl = process.env.API_URL || 'http://localhost:8080';
 
-export async function getUserFragments(user) {
+export async function getUserFragments (user) {
   console.log('Requesting user fragments data...');
   try {
     const fragmentsUrl = new URL('/v1/fragments', apiUrl);
     const res = await fetch(fragmentsUrl, {
-      headers: user.authorizationHeaders(),
+      headers: user.authorizationHeaders()
     });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
