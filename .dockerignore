@@ -1,0 +1,13 @@
+.github/
+.vscode/
+node_modules/
+.env
+.eslintignore
+.git/
+.gitignore
+.prettier*
+node_modules
+.git
+Dockerfile
+.parcel-cache
+.dist

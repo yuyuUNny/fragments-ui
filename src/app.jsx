@@ -1,47 +1,20 @@
-// import { signIn, getUser, signOut } from './auth.js';
-// import { getUserFragments } from './api.js';
-
-// async function init() {
-//   console.log('Initializing app...');
-
-//   const userSection = document.querySelector('#user');
-//   const loginBtn = document.querySelector('#login');
-
-//   const user = await getUser();
-//   if (user) {
-//     userSection.innerHTML = `
-//       <p>Welcome, ${user.username}!</p>
-//       <button id="logout">Logout</button>
-//     `;
-//     const logoutBtn = document.querySelector('#logout');
-//     logoutBtn.addEventListener('click', async () => {
-//       await signOut();
-//     });
-//     try {
-//       const fragments = await getUserFragments(user);
-//       console.log('User fragments:', fragments);
-//     } catch (error) {
-//       console.error('Failed to get fragments:', error);
-//     }
-//   } else {
-//     loginBtn.addEventListener('click', signIn);
-//   }
-// }
-
-// addEventListener('DOMContentLoaded', init);
-
-// App.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn, getUser, signOut } from './auth.js';
-import { getUserFragments } from './api.js';
+import { getUserFragments, createFragment } from './api.js';
 
-export default function App() {
+export default function App () {
   const [user, setUser] = useState(null);
   const [fragments, setFragments] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Test POST to the fragments API
+  const [content, setContent] = useState('');
+  const [contentType, setContentType] = useState('text/plain');
+  const [creating, setCreating] = useState(false);
+  const [createResult, setCreateResult] = useState(null);
+
   useEffect(() => {
-    async function init() {
+    async function init () {
       setLoading(true);
       try {
         const u = await getUser();
@@ -49,10 +22,9 @@ export default function App() {
           setUser(u);
           try {
             const f = await getUserFragments(u);
-            if (Array.isArray(f)) {
-              setFragments(f);
+            if (f?.status === 'ok' && Array.isArray(f.fragments)) {
+              setFragments(f.fragments);
             } else {
-              console.warn('Fragments is not an array:', f);
               setFragments([]);
             }
           } catch (err) {
@@ -68,6 +40,35 @@ export default function App() {
     }
     init();
   }, []);
+
+  // Test POST to fragments API
+  async function handleCreateFragment (e) {
+    e.preventDefault();
+    setCreating(true);
+    setCreateResult(null);
+
+    try {
+      const result = await createFragment(user, content, contentType);
+      setCreateResult({
+        success: true,
+        location: result.location,
+        fragment: result.fragment
+      });
+
+      // Update fragments showing
+      setFragments(prev => [...prev, result.fragment]);
+      // Clear form
+      setContent('');
+    } catch (err) {
+      console.error('Failed to create fragment:', err);
+      setCreateResult({
+        success: false,
+        error: err.message
+      });
+    } finally {
+      setCreating(false);
+    }
+  }
 
   if (loading) return <p>Loading...</p>;
 
@@ -86,17 +87,53 @@ export default function App() {
       <button onClick={signOut}>Logout</button>
 
       <h3>Your Fragments</h3>
-      {fragments.length === 0 ? (
-        <p>No fragments found</p>
-      ) : (
-        <ul>
-          {fragments.map((frag, idx) => (
-            <li key={frag.id ?? frag.fragmentId ?? idx}>
-              {typeof frag === 'object' ? JSON.stringify(frag) : String(frag)}
-            </li>
-          ))}
-        </ul>
-      )}
+      {
+        fragments.length === 0
+          ? (
+              <p>
+                No fragments found
+              </p>
+            )
+          : (
+              <ul>
+                {fragments.map((frag, idx) => (
+                  <li key={frag.id ?? frag.fragmentId ?? idx}>
+                    {typeof frag === 'object' ? JSON.stringify(frag) : String(frag)}
+                  </li>
+                ))}
+              </ul>
+            )
+      }
+      <div>
+        <h3>Create New Fragment</h3>
+        <form onSubmit={handleCreateFragment}>
+          <label htmlFor="contentType">Content Type:</label>
+          <select
+              id="contentType"
+              value={contentType}
+              onChange={(e) => setContentType(e.target.value)}
+            >
+              <option value="text/plain">text/plain</option>
+              <option value="text/html">text/html</option>
+              <option value="text/markdown">text/markdown</option>
+              <option value="application/json">application/json</option>
+            </select>
+          <label htmlFor="content">Content:</label>
+            <textarea
+              id="content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Enter fragment content here"
+              required
+            />
+          <button
+            type="submit"
+            disabled={creating}
+          >
+            Create Fragment
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
