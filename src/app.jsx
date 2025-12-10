@@ -83,6 +83,7 @@ export default function App () {
 
   return (
     <div>
+      <title>Fragments UI v0.11.2 - Advanced</title>
       <p>Welcome, {user.username ?? 'User'}!</p>
       <button onClick={signOut}>Logout</button>
 
